@@ -14,7 +14,9 @@ Encyclopedia of Integer Sequences® (OEIS®)](https://oeis.org).
 
 {-| Generates the Fibonacci series. Each number is the sum for the
 previous two number in the series. By defintion the first two elements
-of the Fibonacci series are 0 and 1. [A000045 - OEIS](https://oeis.org/A000045)
+of the Fibonacci series are 0 and 1. This function will not return series
+longer than 41 integers to avoid overly long processing.
+[A000045 - OEIS](https://oeis.org/A000045)
 
     -- Generate a list of the first 5 Fibonacci numbers
     fibonacci 6
@@ -24,6 +26,9 @@ of the Fibonacci series are 0 and 1. [A000045 - OEIS](https://oeis.org/A000045)
 fibonacci : Int -> List Int
 fibonacci n =
     let
+        nn =
+            min n 41
+
         fib x =
             case x of
                 0 ->
@@ -35,5 +40,5 @@ fibonacci n =
                 _ ->
                     fib (x - 1) + fib (x - 2)
     in
-    List.take n
-        (0 :: List.map fib (List.range 1 n))
+    List.take nn
+        (0 :: List.map fib (List.range 1 nn))

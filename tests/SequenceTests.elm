@@ -30,6 +30,11 @@ fibonacciTests =
                 fibonacci 41
                     |> List.drop 40
                     |> Expect.equal [ 102334155 ]
+        , test "Fibonacci super long test" <|
+            \() ->
+                fibonacci 50
+                    |> List.length
+                    |> Expect.lessThan 50
         , test "Fibonacci series - zero length" <|
             \() ->
                 fibonacci 0
