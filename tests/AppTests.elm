@@ -1,4 +1,4 @@
-module AppTests exposing (suite)
+module AppTests exposing (viewTests)
 
 import Expect exposing (true)
 import Fuzz exposing (int)
@@ -12,8 +12,8 @@ import Time exposing (millisToPosix)
 import Tuple exposing (first)
 
 
-suite : Test
-suite =
+viewTests : Test
+viewTests =
     describe "Views"
         [ test "Welcome view has an OK button" <|
             \() ->
