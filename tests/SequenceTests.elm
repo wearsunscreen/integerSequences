@@ -1,4 +1,7 @@
-module SequenceTests exposing (fibonacciTests)
+module SequenceTests exposing
+    ( fibonacciTest
+    , recamanTest
+    )
 
 import Expect exposing (true)
 import IntegerSequences exposing (..)
@@ -6,8 +9,8 @@ import Main exposing (..)
 import Test exposing (..)
 
 
-fibonacciTests : Test
-fibonacciTests =
+fibonacciTest : Test
+fibonacciTest =
     describe "Test Fibonacci series"
         [ test "Fibonacci series 1" <|
             \() ->
@@ -43,4 +46,36 @@ fibonacciTests =
             \() ->
                 fibonacci -1
                     |> Expect.equal []
+        ]
+
+
+recamanTest : Test
+recamanTest =
+    describe "Test the Recamán sequence"
+        [ test "Recaman length 0" <|
+            \() ->
+                recaman 0
+                    |> Expect.equal []
+        , test "Recaman length 1" <|
+            \() ->
+                recaman 1
+                    |> Expect.equal [ 0 ]
+        , test "Recaman length 2" <|
+            \() ->
+                recaman 2
+                    |> Expect.equal [ 0, 1 ]
+        , test "Recaman length 3" <|
+            \() ->
+                recaman 3
+                    |> Expect.equal [ 0, 1, 3 ]
+        , test "Recaman length 10" <|
+            \() ->
+                recaman 71
+                    |> List.drop 61
+                    |> Expect.equal [ 89, 27, 90, 26, 91, 157, 224, 156, 225, 155 ]
+        , test "Recaman length 1002" <|
+            \() ->
+                recaman 100002
+                    |> List.length
+                    |> Expect.equal 10000
         ]
