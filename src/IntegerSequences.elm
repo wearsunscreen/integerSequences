@@ -1,6 +1,6 @@
 module IntegerSequences exposing
     ( fibonacci
-    , recaman
+    , recaman, totient
     )
 
 {-| This Elm package provides functions to generate integer sequences.
@@ -19,12 +19,12 @@ Encyclopedia of Integer Sequences® (OEIS®)](https://oeis.org).
 previous two number in the series. By defintion the first two elements
 of the Fibonacci series are 0 and 1.
 
-This implementation will not return series
+This implementation will not return a series
 longer than 41 integers to avoid overly long processing.
 
 [A000045 - OEIS](https://oeis.org/A000045)
 
-    -- Generate a list of the first 5 Fibonacci numbers
+    -- Generate a list of the first 6 Fibonacci numbers
     fibonacci 6
     -- will evaluate to [0, 1, 2, 3, 5, 8]
 
@@ -56,15 +56,15 @@ fibonacci n =
 
 {-| Generates the Recamán series.
 
-This implementation will not return series longer than 10000 integers.
+This implementation will not return a series longer than 10000 integers.
 
 [A005132 - OEIS](https://oeis.org/A005132)
 
 [Numberphile Youtube video](https://www.youtube.com/watch?v=FGC5TdIiT9U)
 
-    -- Generate a list of the first 5 Recamán numbers
-    recaman 6
-    -- will evaluate to [0, 1, 2, 3, 5, 8]
+    -- Generate a list of the first 3 Recamán numbers
+    recaman 3
+    -- will evaluate to [0, 1, 3]
 
 -}
 recaman : Int -> List Int
@@ -101,3 +101,43 @@ recaman n =
                         rec len atCurIdx (idx + 1) (acc ++ [ atCurIdx ])
             in
             rec ne 0 1 [ 0 ]
+
+
+{-| Calculates the Euler's Totient, the number of coprimes of a number.
+
+[A000010 - OEIS](https://oeis.org/A000010)
+
+    -- Calculate Euler's totient for 10, 11, 12, 13
+    totient 10 13
+    -- will evaluate to [ 4 10, 4, 12]
+
+-}
+totient : Int -> Int -> List Int
+totient start end =
+    let
+        tot : Int -> Int
+        tot x =
+            if x < 1 then
+                0
+
+            else
+                List.range 0 (x - 1)
+                    |> List.map (isCoprime x)
+                    |> List.filter ((==) True)
+                    |> List.length
+
+        isCoprime : Int -> Int -> Bool
+        isCoprime y z =
+            gcd y z == 1
+
+        -- find greastest common divisor
+        gcd : Int -> Int -> Int
+        gcd a b =
+            if b == 0 then
+                a
+
+            else
+                gcd (abs b) (Basics.modBy b a)
+    in
+    List.range start end
+        |> List.map tot

@@ -1,7 +1,11 @@
-module SequenceTests exposing
-    ( fibonacciTest
-    , recamanTest
-    )
+module SequenceTests exposing (totientTest)
+
+{-
+   ( fibonacciTest
+   , recamanTest
+   , totientTest
+   )
+-}
 
 import Expect exposing (true)
 import IntegerSequences exposing (..)
@@ -78,4 +82,30 @@ recamanTest =
                 recaman 100002
                     |> List.length
                     |> Expect.equal 10000
+        ]
+
+
+totientTest : Test
+totientTest =
+    describe "Totient tests"
+        [ test "negative numbers, zero return zero" <|
+            \() ->
+                totient -3 0
+                    |> Expect.equal [ 0, 0, 0, 0 ]
+        , test "inverted arguments return an empty list" <|
+            \() ->
+                totient 10 5
+                    |> Expect.equal []
+        , test "first five" <|
+            \() ->
+                totient 1 5
+                    |> Expect.equal [ 1, 1, 2, 2, 4 ]
+        , test "totient 11 15" <|
+            \() ->
+                totient 11 15
+                    |> Expect.equal [ 10, 4, 12, 6, 8 ]
+        , test "totient 61 65" <|
+            \() ->
+                totient 61 65
+                    |> Expect.equal [ 60, 30, 36, 32, 48 ]
         ]
