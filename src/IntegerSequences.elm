@@ -1,7 +1,4 @@
-module IntegerSequences exposing
-    ( fibonacci
-    , recaman, totient
-    )
+module IntegerSequences exposing (abundant, fibonacci, recaman, totient)
 
 {-| This Elm package provides functions to generate integer sequences.
 More information on each of the sequences can be found on [The On-Line
@@ -10,9 +7,48 @@ Encyclopedia of Integer Sequences® (OEIS®)](https://oeis.org).
 
 # Integer sequences
 
-@docs fibonacci, random
+@docs abundant, fibonacci, recaman, totient, random
 
 -}
+
+
+{-| Generates the sequence of abundant numbers. n is an abundant number if the
+the sum of its divisors is greater than 2n.
+
+This implementation will not return a series longer than 1000 integers.
+
+[A005101 - OEIS](https://oeis.org/A005101)
+
+    -- Generate a list of the first 3 abundant numbers
+    abundant 3
+    -- will evaluate to [12, 18, 20]
+
+-}
+abundant : Int -> List Int
+abundant n =
+    -- optimize knowing that 12 is the first abundant number
+    let
+        isAbundant : Int -> Bool
+        isAbundant x =
+            List.sum (divisors x) > (x * 2)
+
+        addNext : (Int -> Bool) -> Int -> Int -> List Int -> List Int
+        addNext pred end idx acc =
+            let
+                newAcc =
+                    if pred idx then
+                        acc ++ [ idx ]
+
+                    else
+                        acc
+            in
+            if List.length newAcc >= end then
+                newAcc
+
+            else
+                addNext pred end (idx + 1) newAcc
+    in
+    addNext isAbundant n 1 []
 
 
 {-| Generates the Fibonacci series. Each number is the sum for the
@@ -38,6 +74,7 @@ fibonacci n =
         _ ->
             let
                 ne =
+                    -- subtract on to offset to zero index
                     min n 41 - 1
 
                 fib x =
@@ -114,30 +151,46 @@ recaman n =
 -}
 totient : Int -> Int -> List Int
 totient start end =
-    let
-        tot : Int -> Int
-        tot x =
-            if x < 1 then
-                0
-
-            else
-                List.range 0 (x - 1)
-                    |> List.map (isCoprime x)
-                    |> List.filter ((==) True)
-                    |> List.length
-
-        isCoprime : Int -> Int -> Bool
-        isCoprime y z =
-            gcd y z == 1
-
-        -- find greastest common divisor
-        gcd : Int -> Int -> Int
-        gcd a b =
-            if b == 0 then
-                a
-
-            else
-                gcd (abs b) (Basics.modBy b a)
-    in
     List.range start end
-        |> List.map tot
+        |> List.map totientOf
+
+
+
+{- Utility functions -}
+
+
+{-| Find all divisors of a number
+-}
+divisors : Int -> List Int
+divisors n =
+    List.range 1 (n // 2)
+        |> List.filter (\d -> modBy d n == 0)
+        |> (++) [ n ]
+
+
+{-| find greastest common divisor
+-}
+gcd : Int -> Int -> Int
+gcd a b =
+    if b == 0 then
+        a
+
+    else
+        gcd (abs b) (Basics.modBy b a)
+
+
+isCoprime : Int -> Int -> Bool
+isCoprime y z =
+    gcd y z == 1
+
+
+totientOf : Int -> Int
+totientOf x =
+    if x < 1 then
+        0
+
+    else
+        List.range 0 (x - 1)
+            |> List.map (isCoprime x)
+            |> List.filter ((==) True)
+            |> List.length

@@ -1,16 +1,39 @@
-module SequenceTests exposing (totientTest)
-
-{-
-   ( fibonacciTest
-   , recamanTest
-   , totientTest
-   )
--}
+module SequenceTests
+    exposing
+    -- (abundancyTests)
+    ( abundancyTests
+    , fibonacciTest
+    , recamanTest
+    , totientTest
+    )
 
 import Expect exposing (true)
 import IntegerSequences exposing (..)
 import Main exposing (..)
 import Test exposing (..)
+
+
+abundancyTests : Test
+abundancyTests =
+    describe "Test abundant, deficient and perfect numbers"
+        [ test "Abundant number, negative input returns empty list" <|
+            \() ->
+                abundant -3
+                    |> Expect.equal []
+        , test "abundant 0 should be []" <|
+            \() ->
+                abundant 0
+                    |> Expect.equal []
+        , test "abundant 3 should be []" <|
+            \() ->
+                abundant 3
+                    |> Expect.equal [ 12, 18, 20 ]
+        , test "The 62th abundant number should be 270" <|
+            \() ->
+                abundant 62
+                    |> List.drop 61
+                    |> Expect.equal [ 270 ]
+        ]
 
 
 fibonacciTest : Test
