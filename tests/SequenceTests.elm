@@ -1,6 +1,4 @@
-module SequenceTests
-    exposing
-    -- (abundancyTests)
+module SequenceTests exposing
     ( abundancyTests
     , fibonacciTest
     , recamanTest
@@ -15,24 +13,55 @@ import Test exposing (..)
 
 abundancyTests : Test
 abundancyTests =
-    describe "Test abundant, deficient and perfect numbers"
-        [ test "Abundant number, negative input returns empty list" <|
-            \() ->
-                abundant -3
-                    |> Expect.equal []
-        , test "abundant 0 should be []" <|
-            \() ->
-                abundant 0
-                    |> Expect.equal []
-        , test "abundant 3 should be []" <|
-            \() ->
-                abundant 3
-                    |> Expect.equal [ 12, 18, 20 ]
-        , test "The 62th abundant number should be 270" <|
-            \() ->
-                abundant 62
-                    |> List.drop 61
-                    |> Expect.equal [ 270 ]
+    describe "Test abundant and deficient numbers"
+        [ describe "Abundancy tests"
+            [ test "Abundant number, negative input returns empty list" <|
+                \() ->
+                    abundant -3
+                        |> Expect.equal []
+            , test "abundant 0 should be []" <|
+                \() ->
+                    abundant 0
+                        |> Expect.equal []
+            , test "abundant 3 should be []" <|
+                \() ->
+                    abundant 3
+                        |> Expect.equal [ 12, 18, 20 ]
+            , test "The 62th abundant number should be 270" <|
+                \() ->
+                    abundant 62
+                        |> List.drop 61
+                        |> Expect.equal [ 270 ]
+            , test "abundant 300" <|
+                \() ->
+                    abundant 300
+                        |> List.length
+                        |> Expect.equal 300
+            ]
+        , describe "Deficiency tests"
+            [ test "Deficient number, negative input returns empty list" <|
+                \() ->
+                    deficient -3
+                        |> Expect.equal []
+            , test "deficient 0 should be []" <|
+                \() ->
+                    deficient 0
+                        |> Expect.equal []
+            , test "deficient 3 should be []" <|
+                \() ->
+                    deficient 20
+                        |> Expect.equal [ 1, 2, 3, 4, 5, 7, 8, 9, 10, 11, 13, 14, 15, 16, 17, 19, 21, 22, 23, 25 ]
+            , test "The 62th deficient number should be 270" <|
+                \() ->
+                    deficient 66
+                        |> List.drop 65
+                        |> Expect.equal [ 86 ]
+            , test "deficient 300" <|
+                \() ->
+                    deficient 300
+                        |> List.length
+                        |> Expect.equal 300
+            ]
         ]
 
 

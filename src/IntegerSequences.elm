@@ -1,4 +1,4 @@
-module IntegerSequences exposing (abundant, fibonacci, recaman, totient)
+module IntegerSequences exposing (abundant, deficient, fibonacci, recaman, totient)
 
 {-| This Elm package provides functions to generate integer sequences.
 More information on each of the sequences can be found on [The On-Line
@@ -7,7 +7,7 @@ Encyclopedia of Integer Sequences® (OEIS®)](https://oeis.org).
 
 # Integer sequences
 
-@docs abundant, fibonacci, recaman, totient, random
+@docs abundant, deficient, fibonacci, recaman, totient, random
 
 -}
 
@@ -15,7 +15,7 @@ Encyclopedia of Integer Sequences® (OEIS®)](https://oeis.org).
 {-| Generates the sequence of abundant numbers. n is an abundant number if the
 the sum of its divisors is greater than 2n.
 
-This implementation will not return a series longer than 1000 integers.
+This implementation will not return a series longer than 300 integers.
 
 [A005101 - OEIS](https://oeis.org/A005101)
 
@@ -26,29 +26,29 @@ This implementation will not return a series longer than 1000 integers.
 -}
 abundant : Int -> List Int
 abundant n =
-    -- optimize knowing that 12 is the first abundant number
-    let
-        isAbundant : Int -> Bool
-        isAbundant x =
-            List.sum (divisors x) > (x * 2)
-
-        addNext : (Int -> Bool) -> Int -> Int -> List Int -> List Int
-        addNext pred end idx acc =
-            let
-                newAcc =
-                    if pred idx then
-                        acc ++ [ idx ]
-
-                    else
-                        acc
-            in
-            if List.length newAcc >= end then
-                newAcc
-
-            else
-                addNext pred end (idx + 1) newAcc
-    in
     addNext isAbundant n 1 []
+
+
+{-| Generates the sequence of deficient numbers. n is an deficient number if the
+the sum of its divisors is less than 2n.
+
+This implementation will not return a series longer than 300 integers.
+
+[A005100 - OEIS](https://oeis.org/A005100)
+
+    -- Generate a list of the first 3 deficient numbers
+    deficient 3
+    -- will evaluate to [1, 2, 3]
+
+-}
+deficient : Int -> List Int
+deficient n =
+    case max n 0 of
+        0 ->
+            []
+
+        _ ->
+            addNext isDeficient n 1 []
 
 
 {-| Generates the Fibonacci series. Each number is the sum for the
@@ -159,6 +159,25 @@ totient start end =
 {- Utility functions -}
 
 
+{-| Add more elements if they pass the predicate until finding `n` elements
+-}
+addNext : (Int -> Bool) -> Int -> Int -> List Int -> List Int
+addNext pred n idx acc =
+    let
+        newAcc =
+            if pred idx then
+                acc ++ [ idx ]
+
+            else
+                acc
+    in
+    if List.length newAcc >= n then
+        newAcc
+
+    else
+        addNext pred n (idx + 1) newAcc
+
+
 {-| Find all divisors of a number
 -}
 divisors : Int -> List Int
@@ -177,6 +196,16 @@ gcd a b =
 
     else
         gcd (abs b) (Basics.modBy b a)
+
+
+isAbundant : Int -> Bool
+isAbundant x =
+    List.sum (divisors x) > (x * 2)
+
+
+isDeficient : Int -> Bool
+isDeficient x =
+    List.sum (divisors x) < (x * 2)
 
 
 isCoprime : Int -> Int -> Bool
